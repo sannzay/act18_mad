@@ -59,6 +59,19 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
+  void _retakeQuiz() {
+    setState(() {
+      _questions = [];
+      _currentQuestionIndex = 0;
+      _score = 0;
+      _loading = true;
+      _answered = false;
+      _selectedAnswer = "";
+      _feedbackText = "";
+    });
+    _loadQuestions();
+  }
+
   Widget _buildOptionButton(String option) {
     return ElevatedButton(
       onPressed: _answered ? null : () => _submitAnswer(option),
@@ -77,8 +90,59 @@ class _QuizScreenState extends State<QuizScreen> {
 
     if (_currentQuestionIndex >= _questions.length) {
       return Scaffold(
+        appBar: AppBar(title: Text('Quiz App')),
         body: Center(
-          child: Text('Quiz Finished! Your Score: $_score/${_questions.length}'),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.emoji_events,
+                  size: 80,
+                  color: Colors.amber,
+                ),
+                SizedBox(height: 24),
+                Text(
+                  'Quiz Finished!',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Your Score: $_score/${_questions.length}',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  '${((_score / _questions.length) * 100).toStringAsFixed(0)}%',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: _retakeQuiz,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    minimumSize: Size(200, 50),
+                  ),
+                  child: Text(
+                    'Retake Quiz',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       );
     }
